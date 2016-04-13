@@ -6,15 +6,15 @@ body {
     text-align: center;
 }
 
-.form-signin {
+.form-general {
     max-width: 330px;
     padding: 15px;
     margin: 0 auto;
 }
-.form-signin .form-signin-heading {
+.form-general .form-general-heading {
     margin-bottom: 10px;
 }
-.form-signin .form-control {
+.form-general .form-control {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;
@@ -23,10 +23,10 @@ body {
     padding: 10px;
     font-size: 16px;
 }
-.form-signin .form-control:focus {
+.form-general .form-control:focus {
     z-index: 2;
 }
-.form-signin input {
+.form-general input {
     margin-bottom: 10px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
