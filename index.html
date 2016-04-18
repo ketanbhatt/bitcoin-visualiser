@@ -35,11 +35,12 @@
             <a class="navbar-brand" href="#">Bitcoin Visualiser</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Send Satoshis</a></li>
-                <li><a href="#blockchain">BlockChain</a></li>
+            <ul id="nav-links" class="nav navbar-nav">
+                <li><a href="#essays">Read Essays</a></li>
+                <li><a href="#send-satoshis">Send Satoshi</a></li>
             </ul>
-            <p class="nav navbar-nav navbar-right navbar-text" id="nav-username"></p>
+            <p class="nav navbar-nav navbar-right navbar-text">User: <span id="nav-username">NA</span></p>
+            <p class="nav navbar-nav navbar-right navbar-text"> Balance: <span id="user-balance">NA</span> <span class="glyphicon glyphicon-bitcoin" aria-hidden="true"></span></p>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
@@ -52,13 +53,15 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Get in!</button>
     </form>
     <div id="main-content" style="display: none">
-        <div class="row">
-            <h3>
-                Your Balance : <span id="user-balance"></span> <span class="glyphicon glyphicon-bitcoin" aria-hidden="true"></span>
-            </h3>
+        <div id="essays">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8" id="url-content"></div>
+                <div class="col-md-2"></div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
+        <div id="send-satoshis">
+            <div class="row">
                 <form id="sendSatoshiForm" class="form-general">
                     <h2 class="form-signin-heading">Send Satoshis</h2>
                     <label for="sendTousername" class="sr-only">Send to:</label>
@@ -68,7 +71,6 @@
                     <button class="btn btn-lg btn-info btn-block" type="submit">Send <span class="glyphicon glyphicon-bitcoin" aria-hidden="true"></span></button>
                 </form>
             </div>
-            <div class="col-md-8"></div>
         </div>
     </div>
 </div><!-- /.container -->

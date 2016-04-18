@@ -6,6 +6,16 @@ $().ready(function () {
     var myFirebaseRef = new Firebase("https://scorching-fire-4667.firebaseio.com/");
     var userRef = null;
 
+    var $urlContent = $("#url-content");
+    var pgUrl = "http://www.paulgraham.com/";
+
+    //Code for showing website
+    var loadUrlContent = function (pageUrl) {
+        $.get(pgUrl + pageUrl, function( data ) {
+            $urlContent.html( data );
+        });
+    };
+
     var $userBalance = $("#user-balance");
 
     $("#usernameForm").submit(function( event ) {
@@ -60,5 +70,22 @@ $().ready(function () {
         }
 
     });
+
+    //Load home page
+    loadUrlContent("articles.html");
+
+    $urlContent.on('click', 'a, area', function(event) {
+        event.preventDefault();
+        var page = $(this).attr('href');
+        loadUrlContent(page);
+    });
+
+    //TODO: Also add/remove active class appropriately
+    $("#nav-links").find("a").click(function() {
+        var navs = $("#nav-links").children();
+        for(var i=0; i<navs.length; i++) $($(navs[i]).find("a").attr("href")).hide();
+        $(this.hash).show();
+    });
+
 });
 
