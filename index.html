@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Bitcoin Visualiser</title>
+    <title>Bitcoin Toolkit</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -32,12 +32,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Bitcoin Visualiser</a>
+            <a class="navbar-brand" href="#">Bitcoin Toolkit</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul id="nav-links" class="nav navbar-nav">
-                <li><a href="#essays">Read Essays</a></li>
+                <li class="active"><a href="#essays">Read Essays</a></li>
                 <li><a href="#send-satoshis">Send Satoshi</a></li>
+                <li><a href="#blockchain">BlockChain</a></li>
             </ul>
             <p class="nav navbar-nav navbar-right navbar-text">User: <span id="nav-username">NA</span></p>
             <p class="nav navbar-nav navbar-right navbar-text"> Balance: <span id="user-balance">NA</span> <span class="glyphicon glyphicon-bitcoin" aria-hidden="true"></span></p>
@@ -55,21 +56,46 @@
     <div id="main-content" style="display: none">
         <div id="essays">
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8" id="url-content"></div>
-                <div class="col-md-2"></div>
+                <div class="page-header">
+                    <h1>Paul Graham <small>800+ Startups, One Guy</small></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <button id="start-session" class="btn btn-lg btn-success btn-block">Start Session</button>
+                    <button id="stop-session" style="display: none" class="btn btn-lg btn-info btn-block">Stop Session <span class="badge">
+                    <span id="bytes-consumed">0</span> KB
+                </span></button>
+                </div>
+                <div class="col-md-9" id="url-content"></div>
             </div>
         </div>
-        <div id="send-satoshis">
+        <div id="send-satoshis" style="display: none">
+            <div class="row">
+                <div class="page-header">
+                    <h1>Send Satoshis</h1>
+                </div>
+            </div>
             <div class="row">
                 <form id="sendSatoshiForm" class="form-general">
-                    <h2 class="form-signin-heading">Send Satoshis</h2>
                     <label for="sendTousername" class="sr-only">Send to:</label>
                     <input id="sendTousername" class="form-control" placeholder="Enter User to send to" required autofocus>
                     <label for="bitcoinAmount" class="sr-only">Bitcoins</label>
                     <input id="bitcoinAmount" type="number" class="form-control" placeholder="Enter Satoshis" required autofocus>
                     <button class="btn btn-lg btn-info btn-block" type="submit">Send <span class="glyphicon glyphicon-bitcoin" aria-hidden="true"></span></button>
                 </form>
+            </div>
+        </div>
+        <div id="blockchain" style="display: none">
+            <div class="row">
+                <div class="page-header">
+                    <h1>BlockChain <small>Stay In the Loop</small></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" id="blockchain-content"></div>
+                <div class="col-md-4"></div>
             </div>
         </div>
     </div>

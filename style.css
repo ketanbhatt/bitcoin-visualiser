@@ -6,10 +6,6 @@ body {
     text-align: center;
 }
 
-#main-content div {
-    margin-top: 50px;
-}
-
 .form-general {
     max-width: 330px;
     padding: 15px;
@@ -34,4 +30,14 @@ body {
     margin-bottom: 10px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+}
+
+.blockchain-block {
+    height: 100%;
+    width: 70%;
+    border-radius: 20px;
+    border: black solid thin;
+    background-color: lightgray;
+    text-align: center;
+    margin-bottom: 10px;
 }

@@ -4,23 +4,54 @@
 
 $().ready(function () {
     var myFirebaseRef = new Firebase("https://scorching-fire-4667.firebaseio.com/");
+    var blockchainRef = myFirebaseRef.child('blockchain');
     var userRef = null;
+    var username = null;
+    var $userBalance = $("#user-balance");
+    var currentBalance = 0;
 
     var $urlContent = $("#url-content");
     var pgUrl = "http://www.paulgraham.com/";
+    var bytesConsumed = 0;
+    var $bytesConsumed = $("#bytes-consumed");
+
+    var logToBlockchain = function (msg) {
+        blockchainRef.push(msg)
+    };
+
+    var $blockchain = $("#blockchain-content");
+    blockchainRef.limitToLast(10).on("child_added", function(snapshot, prevChildKey) {
+        var block = snapshot.val();
+        var blockHtml = '<div class="blockchain-block"><h4>' + block + '</h4></div>';
+        $blockchain.prepend(blockHtml);
+    });
+
+
+    var deductBalance = function (user, btcToDeduct) {
+        user.transaction(function (current_btc) {
+            return (current_btc - btcToDeduct);
+        });
+    };
 
     //Code for showing website
     var loadUrlContent = function (pageUrl) {
         $.get(pgUrl + pageUrl, function( data ) {
-            $urlContent.html( data );
+            var kilobytesDownloaded = data.length / 1024;
+            if ((kilobytesDownloaded * 0.1) > currentBalance ) {
+                alert("Balance Insufficient. This action will need " + (kilobytesDownloaded * 0.1).toFixed(2) + " BTC")
+            } else {
+                bytesConsumed += kilobytesDownloaded;
+                $bytesConsumed.text(bytesConsumed.toFixed(2));
+                deductBalance(userRef, kilobytesDownloaded * 0.1);
+
+                $urlContent.html(data);
+            }
         });
     };
 
-    var $userBalance = $("#user-balance");
-
     $("#usernameForm").submit(function( event ) {
         event.preventDefault();
-        var username = $('#inputUserName').val();
+        username = $('#inputUserName').val();
         userRef = myFirebaseRef.child(username);
 
         //Initialise user if not already
@@ -31,17 +62,18 @@ $().ready(function () {
         //Listen to changes
         userRef.on('value', function (snapshot) {
             var newBalance = snapshot.val();
-            var currentBalance = parseInt($userBalance.text());
             if(newBalance > currentBalance) {
                 alert("Received " + (newBalance - currentBalance) + " BTC! Yaay");
             }
-            $userBalance.text(newBalance);
+            currentBalance = newBalance;
+            $userBalance.text(currentBalance.toFixed(2));
         });
 
         //Set username on the navbar and hide form
         $("#nav-username").text(username);
         $("#usernameForm").hide();
         $("#main-content").show();
+
     });
 
     $("#sendSatoshiForm").submit(function( event ) {
@@ -60,6 +92,7 @@ $().ready(function () {
                         return (current_value || 0) + btc;
                     });
                     alert("Wohooo Bitcoins sent!");
+                    logToBlockchain(username + " sent " + btc + " BTC to " + receiver);
                     return (current_btc - btc);
                 }
             });
@@ -71,19 +104,40 @@ $().ready(function () {
 
     });
 
-    //Load home page
-    loadUrlContent("articles.html");
-
     $urlContent.on('click', 'a, area', function(event) {
         event.preventDefault();
         var page = $(this).attr('href');
         loadUrlContent(page);
     });
 
-    //TODO: Also add/remove active class appropriately
+    $("#start-session").click(function () {
+        alert("We are beginning a session now. You will be charged 0.1 BTC for 1 Kb of data used.");
+        logToBlockchain("t1 Transaction started between server and " + username);
+        //Load home page
+        loadUrlContent("articles.html");
+
+        $("#stop-session").toggle();
+        $("#start-session").toggle();
+    });
+
+    $("#stop-session").click(function () {
+        var btcTransferred = bytesConsumed * 0.1;
+        logToBlockchain("Server recieved " + btcTransferred + " BTC from " + username);
+        logToBlockchain(username + " sent " + btcTransferred + " BTC to the Server. Current Balance: " + currentBalance + " BTC")
+
+        alert("You spent " + btcTransferred + " in the current session. The page will now reload");
+        location.reload();
+    });
+
     $("#nav-links").find("a").click(function() {
         var navs = $("#nav-links").children();
-        for(var i=0; i<navs.length; i++) $($(navs[i]).find("a").attr("href")).hide();
+        for(var i=0; i<navs.length; i++) {
+            $(navs[i]).removeClass("active");
+
+            var hrefAttr = $(navs[i]).find("a").attr("href");
+            $(hrefAttr).hide();
+            if (hrefAttr == this.hash) $(navs[i]).addClass("active");
+        }
         $(this.hash).show();
     });
 
