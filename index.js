@@ -125,7 +125,7 @@ $().ready(function () {
         logToBlockchain("Server recieved " + btcTransferred + " BTC from " + username);
         logToBlockchain(username + " sent " + btcTransferred + " BTC to the Server. Current Balance: " + currentBalance + " BTC")
 
-        alert("You spent " + btcTransferred + " in the current session. The page will now reload");
+        alert("You spent " + btcTransferred.toFixed(2) + " in the current session. The page will now reload");
         location.reload();
     });
 
