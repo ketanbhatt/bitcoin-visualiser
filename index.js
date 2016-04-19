@@ -63,7 +63,7 @@ $().ready(function () {
         userRef.on('value', function (snapshot) {
             var newBalance = snapshot.val();
             if(newBalance > currentBalance) {
-                alert("Received " + (newBalance - currentBalance) + " BTC! Yaay");
+                alert("Received " + (newBalance - currentBalance).toFixed(2) + " BTC! Yaay");
             }
             currentBalance = newBalance;
             $userBalance.text(currentBalance.toFixed(2));
