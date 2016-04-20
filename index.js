@@ -28,7 +28,7 @@ $().ready(function () {
 
 
     var deductBalance = function (user, btcToDeduct) {
-        user.transaction(function (current_btc) {
+        user.child('btc').transaction(function (current_btc) {
             return (current_btc - btcToDeduct);
         });
     };
@@ -49,23 +49,10 @@ $().ready(function () {
         });
     };
 
-    $("#usernameForm").submit(function( event ) {
-        event.preventDefault();
-        username = $('#inputUserName').val();
-        userRef = myFirebaseRef.child(username);
-
-        //Initialise user if not already
-        userRef.transaction(function (current_value) {
-            return (current_value || 0);
-        });
-
+    var loginSuccess = function () {
         //Listen to changes
-        userRef.on('value', function (snapshot) {
-            var newBalance = snapshot.val();
-            if(newBalance > currentBalance) {
-                alert("Received " + (newBalance - currentBalance).toFixed(2) + " BTC! Yaay");
-            }
-            currentBalance = newBalance;
+        userRef.child('btc').on('value', function (snapshot) {
+            currentBalance = snapshot.val();
             $userBalance.text(currentBalance.toFixed(2));
         });
 
@@ -73,6 +60,38 @@ $().ready(function () {
         $("#nav-username").text(username);
         $("#usernameForm").hide();
         $("#main-content").show();
+    };
+
+    $("#usernameForm").submit(function( event ) {
+        event.preventDefault();
+        username = $('#inputUserName').val();
+        var password = $('#inputPassword').val();
+
+        userRef = myFirebaseRef.child(username);
+
+        userRef.transaction(function (current_value) {
+            //If user doesn't exist, initialize with 50 BTC and entered password
+            if(current_value === null) {
+                loginSuccess();
+                return {
+                    "btc": 50,
+                    "password": password
+                }
+            }
+            //Else check for password
+            else {
+                var savedPassword = current_value.password;
+
+                //If password doesn't match the one saved, raise an error
+                if (savedPassword !== password) {
+                    alert("password do not match")
+                }
+                //Else let him in
+                else {
+                    loginSuccess();
+                }
+            }
+        });
 
     });
 
@@ -83,13 +102,13 @@ $().ready(function () {
 
         if(confirm("Do you want to send " + btc + " BTC to " + receiver + "?")) {
             //Check user has money
-            userRef.transaction(function (current_btc) {
+            userRef.child('btc').transaction(function (current_btc) {
                 if(current_btc < btc) {
                     alert("You dont have the requested money in your account")
                 } else {
                     //Transfer btc to receiver
-                    myFirebaseRef.child(receiver).transaction(function (current_value) {
-                        return (current_value || 0) + btc;
+                    myFirebaseRef.child(receiver).child('btc').transaction(function (current_value) {
+                        return (current_value || 50) + btc;
                     });
                     alert("Wohooo Bitcoins sent!");
                     logToBlockchain(username + " sent " + btc + " BTC to " + receiver);
